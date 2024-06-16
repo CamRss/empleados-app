@@ -1,9 +1,9 @@
 package com.ez.sisemp.login.servlet;
 
 import com.ez.sisemp.login.business.UsuarioBusiness;
+import com.ez.sisemp.login.entity.UsuarioEntity;
 import com.ez.sisemp.login.enumeration.Roles;
 import com.ez.sisemp.login.exception.UserOrPassIncorrectException;
-import com.ez.sisemp.login.model.Usuario;
 import com.ez.sisemp.shared.enums.Routes;
 
 import javax.servlet.ServletException;
@@ -29,21 +29,44 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UsuarioBusiness business = new UsuarioBusiness();
+        UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
         try {
-            Usuario usuario = business.login(request.getParameter("username"), request.getParameter("password"));
+
+            //Llamada por JDBC
+            //Usuario usuario = usuarioBusiness.loginBusiness(request.getParameter("username"), request.getParameter("password"));
+
+            //Llamada por JPA
+            UsuarioEntity usuarioEntity = usuarioBusiness.loginBusinessJPA(request.getParameter("username"), request.getParameter("password"));
+
             HttpSession session = request.getSession();
-            session.setAttribute("user", usuario);
-            if (usuario.rolId() == Roles.ADMIN.getId()) {
+
+            //Pasando el atributo del JDBC
+            //session.setAttribute("user", usuario);
+
+            //Pasando el atributo del JPA
+            session.setAttribute("user", usuarioEntity);
+
+            //Redirección de rutas de la respuesta del JDBC
+
+            /*if (usuario.rolId() == Roles.ADMIN.getId()) {
                 response.sendRedirect(Routes.ADMIN.getRoute());
-            }else {
+            } else {
+                response.sendRedirect(Routes.EMPLEADO.getRoute());
+            }*/
+
+            //Redirección de rutas de la respuesta del JPA
+
+            if (usuarioEntity.getIdRol() == Roles.ADMIN.getId()) {
+                response.sendRedirect(Routes.ADMIN.getRoute());
+            } else {
                 response.sendRedirect(Routes.EMPLEADO.getRoute());
             }
-        }catch (UserOrPassIncorrectException e){
+
+        } catch (UserOrPassIncorrectException e) {
             request.setAttribute("msj", ERROR_INCORRECT_CREDENTIALS);
             request.setAttribute("detail", e.getMessage());
             request.getRequestDispatcher(LOGIN_JSP).forward(request, response);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ServletException(ERROR_SERVER, e);
         }
     }

@@ -2,6 +2,11 @@ package com.ez.sisemp.empleado.dao;
 
 import com.ez.sisemp.empleado.model.EmpleadoDashboard;
 import com.ez.sisemp.shared.config.MySQLConnection;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
+
 import java.sql.SQLException;
 
 public class EmpleadoDashboardDao {
@@ -19,6 +24,28 @@ public class EmpleadoDashboardDao {
             getTotalDepartamentos()
         );
     }
+
+    public long getTotalEmpleadosJPA() {
+
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("devUnit");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        long totalEmpleados = 0;
+
+        try {
+            // Define la consulta JPQL para contar los empleados
+            String jpql = "SELECT COUNT(e) FROM EmpleadoEntity e";
+            TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+            totalEmpleados = query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+
+        return  totalEmpleados;
+    }
+
 
     public int getTotalEmpleados() throws SQLException, ClassNotFoundException {
         var result = MySQLConnection.executeQuery(SQL_GET_TOTAL_EMPLEADOS);

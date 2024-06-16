@@ -1,9 +1,6 @@
 package com.ez.sisemp.empleado.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -11,9 +8,12 @@ import java.util.Date;
 @Table(name = "empleado")
 public class EmpleadoEntity {
     @Id
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // O GenerationType.AUTO
+    @Column(name = "id")
+    private Long id;
     @Column(name = "codigo_empleado")
     String codigoEmpleado;
+    @Column(name = "nombres")
     String nombres;
     @Column(name = "apellido_pat")
     String apellidoPat;
@@ -22,6 +22,7 @@ public class EmpleadoEntity {
     @Column(name = "id_departamento")
     Integer idDepartamento;
     String correo;
+    @Column(name = "salario")
     double salario;
     @Column(name = "fecha_nacimiento")
     Date fechaNacimiento;

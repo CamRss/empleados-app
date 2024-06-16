@@ -30,7 +30,7 @@ public class EmpleadoBusiness {
 
     public void registrarEmpleado(Empleado empleado) throws SQLException, ClassNotFoundException {
         empleado = new Empleado(generarCodigoEmpleado(), empleado.nombres(), empleado.apellidoPat(), empleado.apellidoMat(), empleado.idDepartamento(), empleado.correo(), empleado.salario(), empleado.fechaNacimiento());
-        validarCampos(empleado);
+        validarCamposJDBC(empleado);
         try {
             empleadoDao.agregarEmpleado(empleado);
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -38,8 +38,31 @@ public class EmpleadoBusiness {
         }
     }
 
+    //EMPLEADO JPA
+
+    public void registrarEmpleadoJPA(EmpleadoEntity empleadoEntity)  {
+        empleadoEntity.setCodigoEmpleado(generarCodigoEmpleado());
+        validarCamposJPA(empleadoEntity);
+
+        try {
+            empleadoDao.agregarEmpleadoJPA(empleadoEntity);
+        }catch (Exception e) {
+            throw new EmailAlreadyInUseException(String.format("El correo %s ya se encuentra registrado", empleadoEntity.getCorreo()));
+        }
+
+    }
+
+
     public void eliminarEmpleado(int id) throws SQLException, ClassNotFoundException {
         empleadoDao.eliminarEmpleado(id);
+    }
+
+    public void eliminarEmpleadoJPA(int id) {
+        empleadoDao.eliminarEmpleadoJPA(id);
+    }
+
+    public void editarEmpleadoJPA(EmpleadoEntity empleadoEntity) {
+        empleadoDao.editarEmpleadoJPA(empleadoEntity);
     }
 
     public List<Empleado> obtenerEmpleados() throws SQLException, ClassNotFoundException {
@@ -86,11 +109,18 @@ public class EmpleadoBusiness {
         return empleadoDashboardDao.get();
     }
 
+    public EmpleadoDashboard obtenerDatosDashboardJPA() throws SQLException, ClassNotFoundException {
+        return empleadoDashboardDao.get();
+    }
+
+
+
     private String generarCodigoEmpleado(){
         return "EMP" + (int) (Math.random() * 1000000);
     }
 
-    private void validarCampos (Empleado empleado){
+    //JDBC
+    private void validarCamposJDBC(Empleado empleado){
         if(StringUtils.isBlank(empleado.codigoEmpleado())){
             throw new IllegalArgumentException("El codigo del empleado no puede ser nulo");
         }
@@ -107,6 +137,30 @@ public class EmpleadoBusiness {
             throw new IllegalArgumentException("La fecha de nacimiento del empleado no puede ser nula");
         }
         if(empleado.salario() < 0){
+            throw new IllegalArgumentException("El salario del empleado no puede ser negativo");
+        }
+    }
+
+    private void validarCamposJPA(EmpleadoEntity empleadoEntity){
+        if(StringUtils.isBlank(empleadoEntity.getCodigoEmpleado())){
+            throw new IllegalArgumentException("El codigo del empleado no puede ser nulo");
+        }
+        if(StringUtils.isBlank(empleadoEntity.getNombres())){
+            throw new IllegalArgumentException("El nombre del empleado no puede ser nulo");
+        }
+        if(StringUtils.isBlank(empleadoEntity.getApellidoPat())){
+            throw new IllegalArgumentException("El apellido paterno del empleado no puede ser nulo");
+        }
+        if(StringUtils.isBlank(empleadoEntity.getApellidoMat())){
+            throw new IllegalArgumentException("El apellido materno del empleado no puede ser nulo");
+        }
+        if(StringUtils.isBlank(empleadoEntity.getCorreo())){
+            throw new IllegalArgumentException("El correo del empleado no puede ser nulo");
+        }
+        if(StringUtils.isBlank(empleadoEntity.getFechaNacimiento().toString())){
+            throw new IllegalArgumentException("La fecha de nacimiento del empleado no puede ser nula");
+        }
+        if(empleadoEntity.getSalario() < 0){
             throw new IllegalArgumentException("El salario del empleado no puede ser negativo");
         }
     }

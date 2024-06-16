@@ -1,4 +1,6 @@
-<%--
+<%@ page import="java.text.ParseException" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %><%--
   Created by IntelliJ IDEA.
   User: eduzuniga
   Date: 2024-04-30
@@ -44,18 +46,21 @@
         <hr class="sidebar-divider">
         <!-- Nav Item -->
         <li class="nav-item">
-            <form action ="/registrar" method="get">
-                <input type="submit" value="Registrar Empleado" style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
+            <form action="/registrar" method="get">
+                <input type="submit" value="Registrar Empleado"
+                       style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
             </form>
         </li>
         <li class="nav-item">
-            <form action ="/bulk" method="post">
-                <input type="submit" value="Registrar Empleados Bulk" style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
+            <form action="/bulk" method="post">
+                <input type="submit" value="Registrar Empleados Bulk"
+                       style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
             </form>
         </li>
         <li class="nav-item">
-            <form action ="/exportar-excel" method="post">
-                <input type="submit" value="Exportar a Excel" style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
+            <form action="/exportar-excel" method="post">
+                <input type="submit" value="Exportar a Excel"
+                       style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
             </form>
         </li>
     </ul>
@@ -76,9 +81,10 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600">
-                                Hola! ${sessionScope.user.primerNombre()}
+                                Hola! ${sessionScope.user.getNombreUsuario()}
                             </span>
-                            <img class="img-profile rounded-circle" src=${sessionScope.user.fotoPerfilBase64()} style="width:65" alt="profile photo">
+                            <img class="img-profile rounded-circle"
+                                 src=${sessionScope.user.getFotoPerfil()} style="width:65" alt="profile photo">
 
                         </a>
                         <!-- Dropdown - User Information -->
@@ -111,31 +117,43 @@
                                         <form action="editar" method="post">
                                             <div class="form-group">
                                                 <label for="nombres">Nombres</label>
-                                                <input type="text" name="nombres" class="form-control" id="nombres"  >
+                                                <input type="text" name="nombres" class="form-control" id="nombres"
+                                                       value="<%=request.getParameter("nombres")%>">
                                             </div>
                                             <div class="form-group">
-                                                <label for="apellidoPat">Apellido Paterno</label>
-                                                <input type="text" name="apellidoPat" class="form-control" id="apellidoPat"  ">
+                                                <label for="apellidopat">Apellido Paterno</label>
+                                                <input type="text" name="apellidopat" class="form-control"
+                                                       id="apellidopat"
+                                                       value="<%=request.getParameter("apellidopat")%>">
                                             </div>
                                             <div class="form-group">
-                                                <label for="apellidoMat">Apellido Materno</label>
-                                                <input type="text" name="apellidoMat" class="form-control" id="apellidoMat"  >
+                                                <label for="apellidomat">Apellido Materno</label>
+                                                <input type="text" name="apellidomat" class="form-control"
+                                                       id="apellidomat"
+                                                       value="<%=request.getParameter("apellidomat")%>">
                                             </div>
                                             <div class="form-group">
                                                 <label for="idDepartamento">Departamento</label>
-                                                <input type="text" name="idDepartamento" class="form-control" id="idDepartamento"  >
+                                                <input type="text" name="idDepartamento" class="form-control"
+                                                       id="idDepartamento"
+                                                       value="<%=request.getParameter("departamento")%>">
                                             </div>
                                             <div class="form-group">
                                                 <label for="correo">Correo</label>
-                                                <input type="email" name="correo" class="form-control" id="correo"  placeholder="Ingresa un correo valido">
+                                                <input type="email" name="correo" class="form-control" id="correo"
+                                                       placeholder="Ingresa un correo valido"
+                                                       value="<%=request.getParameter("correo")%>">
                                             </div>
                                             <div class="form-group">
                                                 <label for="salario">Salario</label>
-                                                <input type="number" name="salario" class="form-control" id="salario" >
+                                                <input type="number" name="salario" class="form-control" id="salario"
+                                                       value="<%=request.getParameter("salario")%>">
                                             </div>
                                             <div class="form-group">
                                                 <label for="fechaNacimiento">Fecha Nacimiento:</label>
-                                                <input type="text" class="form-control" id="fechaNacimiento" name="fechaNacimiento">
+                                                <input type="text" class="form-control" id="fechaNacimiento"
+                                                       name="fechaNacimiento"
+                                                       value="<%=obtenerFechaFormateada(request.getParameter("fecha_nacimiento"))  %>">
                                             </div>
                                             <button type="submit" class="btn btn-primary">Editar</button>
                                         </form>
@@ -184,7 +202,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Selecciona "Salir" para cerrar tu sesion o "Cancelar" para volver </div>
+            <div class="modal-body">Selecciona "Salir" para cerrar tu sesion o "Cancelar" para volver</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <a class="btn btn-primary" href="login.html">Salir</a>
@@ -211,5 +229,19 @@
 <script src="js/demo/chart-pie-demo.js"></script>
 
 </body>
+
+<%!
+    public String obtenerFechaFormateada(String fecha) {
+        SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date fechaDate = formatoEntrada.parse(fecha);
+            return formatoSalida.format(fechaDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ""; // Manejo de error, retorna una cadena vacía o maneja el error de otra forma
+        }
+    }
+%>
 
 </html>

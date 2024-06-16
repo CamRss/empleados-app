@@ -7,7 +7,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,24 +14,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmpleadoDao{
+public class EmpleadoDao {
     private static final String SQL_GET_ALL_EMPLEADOS = """
-    SELECT 
-        e.id, 
-        e.codigo_empleado, 
-        e.nombres, 
-        e.apellido_pat, 
-        e.apellido_mat, 
-        d.nombre AS departamento, 
-        e.correo, 
-        FLOOR(DATEDIFF(NOW(), e.fecha_nacimiento) / 365.25) AS edad, 
-        e.salario 
-    FROM 
-        empleado e
-    INNER JOIN departamentos d ON d.id = e.id_departamento  
-    WHERE 
-        e.activo = 1;
-    """;
+            SELECT 
+                e.id, 
+                e.codigo_empleado, 
+                e.nombres, 
+                e.apellido_pat, 
+                e.apellido_mat, 
+                d.nombre AS departamento, 
+                e.correo, 
+                FLOOR(DATEDIFF(NOW(), e.fecha_nacimiento) / 365.25) AS edad, 
+                e.salario 
+            FROM 
+                empleado e
+            INNER JOIN departamentos d ON d.id = e.id_departamento  
+            WHERE 
+                e.activo = 1;
+            """;
 
     private static final String SQL_GET_ALL_EMPLEADOS_JPQL = """
             Select  e
@@ -47,7 +46,7 @@ public class EmpleadoDao{
     public List<Empleado> obtenerEmpleados() throws SQLException, ClassNotFoundException {
         List<Empleado> empleados = new ArrayList<>();
         PreparedStatement preparedStatement = MySQLConnection.getConnection()
-                                                .prepareStatement(SQL_GET_ALL_EMPLEADOS);
+                .prepareStatement(SQL_GET_ALL_EMPLEADOS);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             empleados.add(mapResultSetToEmpleado(resultSet));
@@ -56,28 +55,83 @@ public class EmpleadoDao{
     }
 
 
-    public List<EmpleadoEntity> obtenerEmpleadosJPA () {
+    public List<EmpleadoEntity> obtenerEmpleadosJPA() {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("devUnit");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        var empleados = entityManager.createQuery(SQL_GET_ALL_EMPLEADOS_JPQL, EmpleadoEntity.class).getResultList();
-        return empleados;
+        return entityManager.createQuery(SQL_GET_ALL_EMPLEADOS_JPQL, EmpleadoEntity.class).getResultList();
     }
 
 
-    public void editarEmpleado (Empleado empleado) throws SQLException, ClassNotFoundException {
+    public void editarEmpleado(Empleado empleado) throws SQLException, ClassNotFoundException {
         //TODO: Implementar la edición de un empleado
     }
 
     public void eliminarEmpleado(int id) throws SQLException, ClassNotFoundException {
-        PreparedStatement preparedStatement = MySQLConnection.getConnection()
-                                                .prepareStatement(SQL_DELETE_EMPLEADO);
+        PreparedStatement preparedStatement = MySQLConnection.getConnection().prepareStatement(SQL_DELETE_EMPLEADO);
         preparedStatement.setInt(1, id);
         preparedStatement.executeUpdate();
     }
 
+    public void editarEmpleadoJPA(EmpleadoEntity empleadoEntity) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("devUnit");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        // Busca el empleado por ID
+        EmpleadoEntity empleado = entityManager.find(EmpleadoEntity.class, empleadoEntity.getId());
+
+        if (empleado != null) {
+            // Inicia una transacción
+            entityManager.getTransaction().begin();
+
+            // Actualiza los campos del empleado
+            empleado.setNombres(empleadoEntity.getNombres());
+            empleado.setApellidoPat(empleadoEntity.getApellidoPat());
+            empleado.setApellidoMat(empleadoEntity.getApellidoMat());
+            //TODO FALTA EL IDDEPARTAMENTO
+            empleado.setIdDepartamento(empleadoEntity.getIdDepartamento());
+
+            empleado.setCorreo(empleadoEntity.getCorreo());
+            empleado.setSalario(empleadoEntity.getSalario());
+            empleado.setFechaNacimiento(empleadoEntity.getFechaNacimiento());
+
+
+            // Commit de la transacción
+            entityManager.getTransaction().commit();
+
+            // Cerrar el entity manager y el factory
+            entityManager.close();
+            entityManagerFactory.close();
+
+        } else {
+            // Manejo del caso en que el empleado no existe
+            //System.out.println("No se encontró un empleado con el ID proporcionado.");
+        }
+
+
+    }
+
+    public void eliminarEmpleadoJPA(int id)   {
+
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("devUnit");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        // Busca el empleado por ID
+        EmpleadoEntity empleado = entityManager.find(EmpleadoEntity.class, id);
+        // Inicia una transacción
+        entityManager.getTransaction().begin();
+        // Elimina la entidad
+        entityManager.remove(empleado);
+        // Commit de la transacción
+        entityManager.getTransaction().commit();
+
+        // Cerrar el entity manager y el factory
+        entityManager.close();
+        entityManagerFactory.close();
+
+    }
+
+
     public void agregarEmpleado(Empleado empleado) throws SQLException, ClassNotFoundException {
-        PreparedStatement preparedStatement = MySQLConnection.getConnection()
-                                                .prepareStatement(SQL_INSERT_EMPLEADO);
+        PreparedStatement preparedStatement = MySQLConnection.getConnection().prepareStatement(SQL_INSERT_EMPLEADO);
         preparedStatement.setString(1, empleado.codigoEmpleado());
         preparedStatement.setString(2, empleado.nombres());
         preparedStatement.setString(3, empleado.apellidoPat());
@@ -88,6 +142,25 @@ public class EmpleadoDao{
         preparedStatement.setDouble(8, empleado.salario());
         preparedStatement.executeUpdate();
     }
+
+    //JPA
+
+    public void agregarEmpleadoJPA(EmpleadoEntity empleadoEntity) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("devUnit");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        // Inicia una transacción
+        entityManager.getTransaction().begin();
+        // Persistir la entidad
+        entityManager.persist(empleadoEntity);
+        // Commit de la transacción
+        entityManager.getTransaction().commit();
+        // Cerrar el entity manager y el factory
+        entityManager.close();
+        entityManagerFactory.close();
+
+    }
+
 
     private Empleado mapResultSetToEmpleado(ResultSet resultSet) throws SQLException {
         return new Empleado(resultSet.getInt("id"),

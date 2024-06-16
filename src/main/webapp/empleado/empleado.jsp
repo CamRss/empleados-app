@@ -76,9 +76,9 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600">
-                                Hola! ${sessionScope.user.primerNombre()}
+                                Hola! ${sessionScope.user.getNombreUsuario()}
                             </span>
-                            <img class="img-profile rounded-circle" src=${sessionScope.user.fotoPerfilBase64()} style="width:65" alt="profile photo">
+                            <img class="img-profile rounded-circle" src=${sessionScope.user.getFotoPerfil()} style="width:65" alt="profile photo">
 
                         </a>
                         <!-- Dropdown - User Information -->
@@ -204,7 +204,9 @@
                                 <td>${empleado.edad()}</td>
                                 <td>${empleado.salario()}</td>
                                 <td>
-                                    <a href="empleado/editar?id=${empleado.id()}">Editar</a>
+
+                                    <a href="empleado/editar?id=${empleado.id()}&codigo=${empleado.codigoEmpleado()}&nombres=${empleado.nombres()}&apellidopat=${empleado.apellidoPat()}&apellidomat=${empleado.apellidoMat()}&departamento=${empleado.departamento()}&correo=${empleado.correo()}&edad=${empleado.edad()}&salario=${empleado.salario()}&fecha_nacimiento=${empleado.fechaNacimiento().toString()}">Editar</a>
+
                                     <form action="empleado/eliminar" method="post" style="display:inline;">
                                         <input type="hidden" name="id" value="${empleado.id()}">
                                         <input type="submit" value="Eliminar" style="background:none;border:none;color:blue;">
