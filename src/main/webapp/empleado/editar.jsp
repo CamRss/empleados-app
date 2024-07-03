@@ -132,12 +132,36 @@
                                                        id="apellidomat"
                                                        value="<%=request.getParameter("apellidomat")%>">
                                             </div>
+
+                                      <%--      <% Integer specificDepartamentoID =  Integer.valueOf(request.getParameter("iddepartamento")); %>
                                             <div class="form-group">
                                                 <label for="idDepartamento">Departamento</label>
-                                                <input type="text" name="idDepartamento" class="form-control"
-                                                       id="idDepartamento"
-                                                       value="<%=request.getParameter("departamento")%>">
+                                                <select name="idDepartamento" class="form-control" id="idDepartamento">
+                                                    <c:forEach var="departamento" items="${departamentos}">
+                                                        <c:choose>
+                                                            <!-- Mostrar el departamento específico al principio -->
+                                                            <c:when test="${departamento.id() == request.getParameter}">
+                                                                <option value="${departamento.id()}" selected="selected">${departamento.nombre()}</option>
+                                                            </c:when>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                    <c:forEach var="departamento" items="${departamentos}">
+                                                        <c:if test="${departamento.id() != specificDepartamentoID}">
+                                                            <option value="${departamento.id()}">${departamento.nombre()}</option>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </select>
                                             </div>
+--%>
+                                           <div class="form-group">
+                                                <label for="idDepartamento">Departamento</label>
+                                                <select name="idDepartamento" class="form-control" id="idDepartamento">
+                                                    <c:forEach var="departamento" items="${departamentos}">
+                                                        <option value="${departamento.id()}">${departamento.nombre()}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+
                                             <div class="form-group">
                                                 <label for="correo">Correo</label>
                                                 <input type="email" name="correo" class="form-control" id="correo"

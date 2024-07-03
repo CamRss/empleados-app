@@ -3,6 +3,7 @@ package com.ez.sisemp.empleado.servlet;
 import com.ez.sisemp.empleado.business.EmpleadoBusiness;
 import com.ez.sisemp.empleado.entity.EmpleadoEntity;
 import com.ez.sisemp.parametro.dao.ParametroDao;
+import com.ez.sisemp.parametro.model.Departamento;
 import com.ez.sisemp.shared.enums.Routes;
 import com.ez.sisemp.shared.utils.SessionUtils;
 
@@ -15,19 +16,21 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @WebServlet("/empleado/editar")
 public class EditarEmpleadoServlet extends HttpServlet {
 
     private EmpleadoBusiness empleadoBusiness;
     private EmpleadoEntity empleadoEntity;
+    private ParametroDao parametroDao;
 
     @Override
     public void init() throws ServletException {
         super.init();
         empleadoBusiness = new EmpleadoBusiness();
         empleadoEntity = new EmpleadoEntity();
-
+        parametroDao = new ParametroDao();
     }
 
     @Override
@@ -35,6 +38,7 @@ public class EditarEmpleadoServlet extends HttpServlet {
 
         empleadoEntity.setId(Long.parseLong(req.getParameter("id")));
 
+        loadDepartamentos(req);
         req.getRequestDispatcher("/empleado/editar.jsp").forward(req, resp);
     }
 
@@ -50,8 +54,7 @@ public class EditarEmpleadoServlet extends HttpServlet {
         empleadoEntity.setApellidoPat(request.getParameter("apellidopat"));
         empleadoEntity.setApellidoMat(request.getParameter("apellidomat"));
         //FALTA RECUPERAR EL ID DEPARTAMENTO
-        empleadoEntity.setIdDepartamento(1);
-
+        empleadoEntity.setIdDepartamento(Integer.valueOf(request.getParameter("iddepartamento")));
         empleadoEntity.setCorreo(request.getParameter("correo"));
         empleadoEntity.setSalario(Double.parseDouble(request.getParameter("salario")));
 
@@ -74,5 +77,26 @@ public class EditarEmpleadoServlet extends HttpServlet {
         empleadoBusiness.editarEmpleadoJPA(empleadoEntity);
         response.sendRedirect(Routes.EMPLEADO.getRoute());
 
+    }
+
+    private void loadDepartamentos(HttpServletRequest request)  {
+
+        List<Departamento> departamentos = parametroDao.obtenerDepartamentos();
+
+        // Reordenar la lista para que el departamento específico esté al principio
+        Departamento specificDepartamento = null;
+        for (Departamento dep : departamentos) {
+            if (dep.id() == (Integer.valueOf(request.getParameter("iddepartamento")))) {
+                specificDepartamento = dep;
+                break;
+            }
+        }
+
+        if (specificDepartamento != null) {
+            departamentos.remove(specificDepartamento);
+            departamentos.add(0, specificDepartamento);
+        }
+
+        request.setAttribute("departamentos", departamentos);
     }
 }

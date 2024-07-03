@@ -87,7 +87,7 @@ public class EmpleadoDao {
             empleado.setNombres(empleadoEntity.getNombres());
             empleado.setApellidoPat(empleadoEntity.getApellidoPat());
             empleado.setApellidoMat(empleadoEntity.getApellidoMat());
-            //TODO FALTA EL IDDEPARTAMENTO
+            //FALTA EL IDDEPARTAMENTO
             empleado.setIdDepartamento(empleadoEntity.getIdDepartamento());
 
             empleado.setCorreo(empleadoEntity.getCorreo());

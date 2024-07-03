@@ -205,7 +205,7 @@
                                 <td>${empleado.salario()}</td>
                                 <td>
 
-                                    <a href="empleado/editar?id=${empleado.id()}&codigo=${empleado.codigoEmpleado()}&nombres=${empleado.nombres()}&apellidopat=${empleado.apellidoPat()}&apellidomat=${empleado.apellidoMat()}&departamento=${empleado.departamento()}&correo=${empleado.correo()}&edad=${empleado.edad()}&salario=${empleado.salario()}&fecha_nacimiento=${empleado.fechaNacimiento().toString()}">Editar</a>
+                                    <a href="empleado/editar?id=${empleado.id()}&codigo=${empleado.codigoEmpleado()}&nombres=${empleado.nombres()}&apellidopat=${empleado.apellidoPat()}&apellidomat=${empleado.apellidoMat()}&departamento=${empleado.departamento()}&iddepartamento=${empleado.idDepartamento()}&correo=${empleado.correo()}&edad=${empleado.edad()}&salario=${empleado.salario()}&fecha_nacimiento=${empleado.fechaNacimiento().toString()}">Editar</a>
 
                                     <form action="empleado/eliminar" method="post" style="display:inline;">
                                         <input type="hidden" name="id" value="${empleado.id()}">

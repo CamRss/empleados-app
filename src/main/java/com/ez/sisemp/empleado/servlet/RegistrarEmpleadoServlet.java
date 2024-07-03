@@ -53,6 +53,7 @@ public class RegistrarEmpleadoServlet extends HttpServlet {
             empleadoBusiness.registrarEmpleadoJPA(empleadoEntity);
 
             request.setAttribute("msj", "Empleado registrado correctamente");
+            // Redirige al usuario a la ruta de empleados
             response.sendRedirect(Routes.EMPLEADO.getRoute());
         } catch (ParseException e) {
             handleParseException(request, response, e);

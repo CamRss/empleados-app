@@ -45,6 +45,7 @@ public class EmpleadoBusiness {
         validarCamposJPA(empleadoEntity);
 
         try {
+            // agregar el empleado a través de empleaodao
             empleadoDao.agregarEmpleadoJPA(empleadoEntity);
         }catch (Exception e) {
             throw new EmailAlreadyInUseException(String.format("El correo %s ya se encuentra registrado", empleadoEntity.getCorreo()));

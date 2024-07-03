@@ -38,6 +38,7 @@ public class UsuarioDao {
         List<UsuarioEntity> listUsuarioEntity;
         UsuarioEntity user;
         listUsuarioEntity =  query.getResultList();
+        //obtenga el primer usuario de la lista
         user = listUsuarioEntity.get(0);
         return user;
 
