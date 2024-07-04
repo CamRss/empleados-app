@@ -55,6 +55,12 @@
                 <input type="submit" value="Exportar a Excel" style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
             </form>
         </li>
+        <li class="nav-item">
+            <form action="cerrar-sesion" method="post">
+                <input type="submit" value="Cerrar sesion"
+                       style="background:none;border:none;color:white;font-size: 1rem;font-weight: 400;line-height: 1.5">
+            </form>
+        </li>
     </ul>
     <!-- Fin Sidebar -->
 

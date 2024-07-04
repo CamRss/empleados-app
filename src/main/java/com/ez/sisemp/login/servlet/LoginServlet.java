@@ -5,6 +5,7 @@ import com.ez.sisemp.login.entity.UsuarioEntity;
 import com.ez.sisemp.login.enumeration.Roles;
 import com.ez.sisemp.login.exception.UserOrPassIncorrectException;
 import com.ez.sisemp.shared.enums.Routes;
+import com.ez.sisemp.shared.utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,13 +24,18 @@ public class LoginServlet extends HttpServlet {
     private static final String ERROR_SERVER = "Error interno en el servidor";
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+
         response.sendRedirect(LOGIN_JSP);
+
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
         UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+
         try {
 
             //Llamada por JDBC

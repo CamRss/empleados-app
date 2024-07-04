@@ -18,4 +18,14 @@ public class SessionUtils {
         }
         return true;
     }
+    public static boolean cerrarSesion(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        // Invalidar la sesión actual
+        request.getSession().invalidate();
+
+        // Redirigir a la página de inicio de sesión u otra página deseada
+        response.sendRedirect(LOGIN_JSP);
+
+        return false; // Indicar que la sesión no está válida
+    }
+
 }

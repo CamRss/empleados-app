@@ -94,7 +94,6 @@ public class EmpleadoDao {
             empleado.setSalario(empleadoEntity.getSalario());
             empleado.setFechaNacimiento(empleadoEntity.getFechaNacimiento());
 
-
             // Commit de la transacción
             entityManager.getTransaction().commit();
 

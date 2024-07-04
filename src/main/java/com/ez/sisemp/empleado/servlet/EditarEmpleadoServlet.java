@@ -35,6 +35,11 @@ public class EditarEmpleadoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (!SessionUtils.validarSesion(req, resp)) {
+
+            return;
+
+        }
 
         empleadoEntity.setId(Long.parseLong(req.getParameter("id")));
 
@@ -54,7 +59,29 @@ public class EditarEmpleadoServlet extends HttpServlet {
         empleadoEntity.setApellidoPat(request.getParameter("apellidopat"));
         empleadoEntity.setApellidoMat(request.getParameter("apellidomat"));
         //FALTA RECUPERAR EL ID DEPARTAMENTO
-        empleadoEntity.setIdDepartamento(Integer.valueOf(request.getParameter("iddepartamento")));
+        //creo una variable entero para iddepartamento
+
+       int iddepartamentotipoentero ;
+       String idDepartamentotipostring;
+
+       //asigno valor para la variable iddepartamento desde el request
+
+        idDepartamentotipostring =  request.getParameter("idDepartamento");
+
+        //se evalua que el valor no sea nulo
+
+        if ( idDepartamentotipostring == null) {
+
+           iddepartamentotipoentero = 1 ;
+
+        } else {
+
+            iddepartamentotipoentero = Integer.parseInt(idDepartamentotipostring);
+
+        }
+
+
+        empleadoEntity.setIdDepartamento(iddepartamentotipoentero);
         empleadoEntity.setCorreo(request.getParameter("correo"));
         empleadoEntity.setSalario(Double.parseDouble(request.getParameter("salario")));
 
@@ -73,6 +100,7 @@ public class EditarEmpleadoServlet extends HttpServlet {
             //Solo para que el dato no esté vacio
             empleadoEntity.setFechaNacimiento(Date.from(Instant.now()));
         }
+
 
         empleadoBusiness.editarEmpleadoJPA(empleadoEntity);
         response.sendRedirect(Routes.EMPLEADO.getRoute());
